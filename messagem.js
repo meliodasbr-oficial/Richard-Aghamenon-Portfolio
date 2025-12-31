@@ -1,9 +1,26 @@
-window.addEventListener('load', function() {
-    emailjs.init('2Sr6BC9drHhpdIq-S'); // Your User ID
-    const form = document.getElementById('contact-form');
-    const responseMessage = document.getElementById('responseMessage');
+window.addEventListener('load', function () {
+    emailjs.init('2Sr6BC9drHhpdIq-S');
 
-    form.addEventListener('submit', function(event) {
+    const form = document.getElementById('contact-form');
+    const toastContainer = document.getElementById('toast-container');
+
+    function showToast(message, type = "success") {
+        const toast = document.createElement("div");
+        toast.className = `toast ${type}`;
+
+        let icon = "✔️";
+        if (type === "error") icon = "❌";
+
+        toast.innerHTML = `<i>${icon}</i>${message}`;
+
+        toastContainer.appendChild(toast);
+
+        setTimeout(() => {
+            toast.remove();
+        }, 10000); // 10 segundos
+    }
+
+    form.addEventListener('submit', function (event) {
         event.preventDefault();
 
         const name = document.getElementById('name').value;
@@ -14,13 +31,11 @@ window.addEventListener('load', function() {
             from_name: name,
             from_email: email,
             message: message,
-        }).then(function() {
-            responseMessage.style.display = 'block';
-            responseMessage.textContent = 'Mensagem enviada com sucesso!';
+        }).then(function () {
+            showToast("Mensagem enviada com sucesso!", "success");
             form.reset();
-        }, function(error) {
-            responseMessage.style.display = 'block';
-            responseMessage.textContent = 'Erro ao enviar a mensagem: ' + JSON.stringify(error);
+        }).catch(function () {
+            showToast("Erro ao enviar a mensagem. Tente novamente.", "error");
         });
     });
 });
